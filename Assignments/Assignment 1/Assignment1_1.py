@@ -28,6 +28,7 @@ def rectangle(x, y, width, height, color=""):
     t = make_turtle(x,y) 
     t.fillcolor(color)
     t.speed(0)
+    t.hideturtle()
     t.begin_fill()
     t.forward(width)
     t.left(90)
@@ -47,6 +48,7 @@ def tricolore(x, y, h):
 
 def pentagram(x, y, side, color):
     t = make_turtle(x,y) # Creates it at (x,y)
+    t.color(color)
     t.speed(0) 
     t.begin_fill()
     t.hideturtle() 
@@ -64,7 +66,7 @@ def generator(x, y, amount, color):
 
 
 tricolore(-200, -50, 250)
-generator(-240, 375, 5, "default")
-generator(-240, -130, 5, "default")
+generator(-240, 375, 5, "green")
+generator(-240, -130, 5, "green")
 
 turtle.done()
