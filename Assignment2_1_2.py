@@ -1,16 +1,46 @@
-
-def smooth_a(a,n):
+# Program 
+def smooth_a(a,n): # Original solution the one presented at the lesson
     r = []
     #Corner elements
     temp = a.copy() # Creating a new list by copying a into it
-    for x in range(n): 
-        temp.insert(0, a[0]) # Insert the first element of a at spot 0
-        temp.append(a[-1]) # Insert the last element, negative index starts at the end
-    for i in range(n, len(temp) -n ):
+    for x in range(0, len(a) -1 ): 
+        temp.insert(x, a[0]) # Insert the first element of a at spot 0
+        temp.append(a[-1]) # Insert the last element, negative index makes end point.
+    for i in range(n, len(temp) - n):
         interval = temp[(i-n):i + (n+1)]
         sumof_a = sum(interval) # From i-n to i+n+1, from looking at excericse D
         amount_a = 2*n + 1 
         r.append(sumof_a/amount_a) # Appends to new r.
+    return r
+
+def smooth_a1(a,n): # Not sure why this work, with pytest but it does work, this was my original solution until i cleaned it up,
+    r = []
+    for i in range(0, len(a)):
+        temporary_outside_right = (i + n) - (len(a)-1) # how many points outside the given interval, -1 because python starts at 0 
+        temporary_outside_left = (i-n) * -1 # same here but the left side of the interval 
+        if  (i - n) < 0:  # We check if it is in the interval, 
+            interval = a[0:i + (n+1)] 
+            sum_of_a = sum(interval)
+            temp = a[0] * temporary_outside_left #
+            amount_a = (2*n +1)
+            r.append((sum_of_a + temp)/amount_a)
+        elif (i + n > len(a) - 1 ):  # Basically same as smooth_b,
+            interval = a[(i-n):len(a)]
+            sum_of_a = sum(interval)
+            temp = a[-1] * temporary_outside_right
+            amount_a = (2*n +1)
+            r.append((sum_of_a + temp)/amount_a) 
+        elif (i - n < 0 and i + n > len(a) -1): 
+            interval = a[0:len(a)]
+            sum_of_a = sum(interval)
+            temp = a[-1] * temporary_outside_right + a[0] * temporary_outside_left
+            amount_a = (2*n +1)
+            r.append((sum_of_a + temp)/amount_a)    
+        else: 
+            interval = a[(i - n): i + (n+1)]
+            sum_of_a = sum(interval)
+            amount_a = (2*n +1)
+            r.append((sum_of_a/amount_a))
     return r
 
 
@@ -47,7 +77,6 @@ def round_list(a_list, ndigits):
 
 
 x = [1, 2, 6, 4, 5, 0, 1, 2] 
-print(x[0:1])
 print('smooth_a(x, 1): ', smooth_a(x, 1)) 
 print('smooth_a(x, 2): ', smooth_a(x, 2)) 
 print('smooth_b(x, 1): ', smooth_b(x, 1)) 

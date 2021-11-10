@@ -29,20 +29,16 @@ def rectangle(x, y, width, height, color=""): # Draws a recttangle
     t.fillcolor(color)
     t.hideturtle()
     t.begin_fill()
-    t.forward(width) # Can be done with for loop, like assigment 3. 
-    t.left(90)
-    t.forward(height)
-    t.left(90)
-    t.forward(width)
-    t.left(90)
-    t.forward(height)
+    for distance in [width, height, width, height]:
+        t.forward(distance)
+        t.left(90)
     t.end_fill()
 
 def tricolore(x, y, h):
     colors = ["blue", "white", "red"] 
     w = h/2
     for i in range(3):
-        rectangle(x + w*i, y, w, h, colors[i]) 
+        rectangle(x + w*i, y, w, h, colors[i])  # moves the x-cordinate, to create three seperate rectangl
 
 
 def pentagram(x, y, side, color): # Creates a pentagram 
@@ -58,10 +54,10 @@ def pentagram(x, y, side, color): # Creates a pentagram
     t.end_fill()
 
 def generator(x, y, amount, color): # Uses the pentagram to create amount, and what color
-    distans=120
+    distans = 120
     for i in range(amount):
-        pentagram(x, y, distans, color)
-        x=x+distans
+        pentagram(x +distans * i, y, distans, color)
+        
 
 
 tricolore(-200, -50, 250)

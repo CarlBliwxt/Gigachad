@@ -29,9 +29,8 @@ def rectangle(x, y, width, height, color=""):
     t.end_fill()
 
 def move_random(t):
-    #Måste ha en input
     h = t.heading() 
-    if (-250 <= t.xcor()  <= 250  and -250 <= t.ycor() <= 250):
+    if (abs(t.xcor()) <= 250 and abs(t.ycor()) <= 250):
         t.setheading(random.randint(h-45, h+45))
     else:
         t.setheading(int(t.towards(0,0)))
@@ -42,16 +41,14 @@ def close(turtle1, turtle2):
     if (turtle1.distance(turtle2) < 50):
         turtle1.write("Close")
         count += 1
-    return count
+    return count 
     
 #Script 
-Length=500 
+length = 500 
 RANGE_AMOUNT = 150
-
-intervall = [-Length/2, Length/2]
-rectangle(-Length/2,-Length/2, Length,  Length, "lightgreen")
-turtle1 = make_turtle(random.randint(-Length/2, Length/2), random.randint(-Length/2,Length/2),'blue')
-turtle2 = make_turtle(random.randint(-Length/2, Length/2), random.randint(-Length/2,Length/2),'red')
+rectangle(-length/2,-length/2, length,  length, "lightgreen")
+turtle1 = make_turtle(random.randint(-length/2, length/2), random.randint(-length/2, length/2), 'blue')
+turtle2 = make_turtle(random.randint(-length/2, length/2), random.randint(-length/2, length/2), 'red')
 
 closecounter = 0
 for i in range(RANGE_AMOUNT):

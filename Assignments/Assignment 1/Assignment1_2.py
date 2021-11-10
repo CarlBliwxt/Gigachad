@@ -21,20 +21,16 @@ def rectangle(x, y, width, height, color=""): # Draws a rectangle
     t = make_turtle(x,y) 
     t.fillcolor(color)
     t.begin_fill()
-    t.forward(height) # This can be done with a for loop, like in assigment 3, but left the code like the orignal 
-    t.left(90)
-    t.forward(width)
-    t.left(90)
-    t.forward(height)
-    t.left(90)
-    t.forward(width)
+    for distance in [height,width,height,width]:
+        t.forward(distance)
+        t.left(90)
     t.end_fill()
 
 def vietnamese_flag(x, y, height):# Function that creates the vietnamese flag, uses rectangle and pentagram
     colors = ["red","red","red"]
     width = height/2
     rectangle(x, y, width, height, "red")
-    pentagram(x+300, y+230, height*0.3,"yellow") 
+    pentagram(x+width, y+height*0.42, height*0.3,"yellow") 
     
 def pentagram(x, y, side, color): # Creates a pentagram
     t = make_turtle(x,y) # Creates it at (x,y)
@@ -48,7 +44,7 @@ def pentagram(x, y, side, color): # Creates a pentagram
     t.end_fill()
 
 # Script, calls the functions to create the flag, 
-vietnamese_flag(-300,-150, 600)
+vietnamese_flag(50, 50, 100)
 turtle.done()
 
 
