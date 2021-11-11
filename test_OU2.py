@@ -31,7 +31,6 @@ def test_smooth_a(x, y):
     assert smooth_a(x, 1) == [1.3333333333333333, 3.0, 4.0, 5.0, 3.0, 2.0, 1.0, 1.6666666666666667]
     assert smooth_a(x, 2) == [2.2, 2.8, 3.6, 3.4, 3.2, 2.4, 2.0, 1.4]
     assert len(smooth_a(x, 10)) == len(x)
-
     assert smooth_a(y, 20) == y
 
 

@@ -3,7 +3,7 @@ def smooth_a(a,n): # Original solution the one presented at the lesson
     r = []
     #Corner elements
     temp = a.copy() # Creating a new list by copying a into it
-    for x in range(0, len(a) -1 ): 
+    for x in range(n): # I had accidentaly changed this to 0 len(a) -1, corrected
         temp.insert(x, a[0]) # Insert the first element of a at spot 0
         temp.append(a[-1]) # Insert the last element, negative index makes end point.
     for i in range(n, len(temp) - n):
@@ -13,7 +13,7 @@ def smooth_a(a,n): # Original solution the one presented at the lesson
         r.append(sumof_a/amount_a) # Appends to new r.
     return r
 
-def smooth_a1(a,n): # Not sure why this work, with pytest but it does work, this was my original solution until i cleaned it up,
+def smooth_a1(a,n): # Not sure why this work, with pytest but it does work, this was my original solution until i read that you should not use if 
     r = []
     for i in range(0, len(a)):
         temporary_outside_right = (i + n) - (len(a)-1) # how many points outside the given interval, -1 because python starts at 0 
@@ -64,7 +64,7 @@ def smooth_b(b,n):
     
     # Here i starts at len(a) - n, so to get on the left side, we do i-n,
     # To get it on the right side it needs to go the full length of a and needs to stop there
-    for i in range(len(b) - n, len(b) ): 
+    for i in range(len(b) - n, len(b)): 
         interval = b[(i-n): len(b)]
         sumof_b = sum(interval)
         length = len(interval)
