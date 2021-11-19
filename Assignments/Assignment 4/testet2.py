@@ -41,20 +41,26 @@ def SIR(S0, I0, R0, a, b, T=100):
         R0 = R[-1]
     return S, I, R, t   
     
+def plotting(t, S, I, R, d):
+    fig, ax = plt.subplots(2)
+    ax[0].plot(t, S, 'blue', alpha=0.7, linewidth=2, label='Susceptible')
+    ax[0].plot(t, I, 'orange',  alpha=0.7, linewidth=2, label='Infected')
+    ax[0].plot(t, R, 'green', alpha=0.7, linewidth=2, label='Recovered')
 
-def plotting(t, S, I, R):
-    fig, ax = plt.subplots(1,1,figsize=(10,4))
-    ax.plot(t, S, 'blue', alpha=0.7, linewidth=2, label='Susceptible')
-    ax.plot(t, I, 'orange',  alpha=0.7, linewidth=2, label='Infected')
-    ax.plot(t, R, 'green', alpha=0.7, linewidth=2, label='Recovered')
-    ax.set_xlabel('Time (weeks)')
-    ax.set_ylabel('Number of individuals')
+    ax[0].set_ylabel('Number of individuals')
+    ax[1].set_xlabel('Time (weeks)')
+    ax[1]. plot(t, d, "red", alpha=0.7, linewidth=2, label='death toll')
     
-    legend = ax.legend()
-    legend.get_frame().set_alpha(1)
+    legend1 = ax[0].legend()
+    legend1.get_frame().set_alpha(1)
+    legend2 = ax[1].legend()
+    legend2.get_frame().set_alpha(1)
     plt.show();
 
 S, I, R, t = SIR(S0,I0,R0, a, b, T=50)
-plotting(t, S, I, R )
+d = np.diff(R) * 0.9
+d = np.append(d, [0] )
+print(d*0.9)
+plotting(t, S, I, R, d)
 
     
