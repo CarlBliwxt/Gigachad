@@ -33,10 +33,17 @@ def test_smooth_a(x, y):
     assert len(smooth_a(x, 10)) == len(x)
     assert smooth_a(y, 20) == y
 
+def test_smooth_b(x, y):
+    assert smooth_b(x, 0) == x
+    assert smooth_b(x, 1) == [1.5, 3.0, 4.0, 5.0, 3.0, 2.0, 1.0, 1.5]
+    assert smooth_b(x, 2) == [3.0, 3.25, 3.6, 3.4, 3.2, 2.4, 2.0, 1.0]
+    assert len(smooth_b(x, 10)) == len(x)
 
+    assert smooth_b(y, 20) == y
 
 def test_round_list(x, y):
     assert round_list(smooth_a(x, 1), 2) == [1.33, 3.0, 4.0, 5.0, 3.0, 2.0, 1.0, 1.67]
 
     assert round_list(x, 3) == x
     assert round_list(y, 3) == y
+

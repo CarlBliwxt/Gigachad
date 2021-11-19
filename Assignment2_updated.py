@@ -1,16 +1,19 @@
 # Program 
-def smooth_a(a,n): # Original solution the one presented at the lesson
+def smooth_a(a,n): # Original solution the one presented at the lesson'
     r = []
     #Corner elements
     temp = a.copy() # Creating a new list by copying a into it
-    for x in range(n): # I had accidentaly changed this to 0 len(a) -1, corrected
-        temp.insert(x, a[0]) # Insert the first element of a at spot 0
-        temp.append(a[-1]) # Insert the last element, negative index makes end point.
-    for i in range(n, len(temp) - n):
-        interval = temp[(i-n):i + (n+1)]
-        sumof_a = sum(interval) # From i-n to i+n+1, from looking at excericse D
-        amount_a = 2*n + 1 
-        r.append(sumof_a/amount_a) # Appends to new r.
+    if temp == []:
+        return r
+    else: 
+        for x in range(n): # I had accidentaly changed this to 0 len(a) -1, corrected
+            temp.insert(x, a[0]) # Insert the first element of a at spot 0
+            temp.append(a[-1]) # Insert the last element, negative index makes end point.
+        for i in range(n, len(temp) - n):
+            interval = temp[(i-n):i + (n+1)]
+            sumof_a = sum(interval) # From i-n to i+n+1, from looking at excericse D
+            amount_a = 2*n + 1 
+            r.append(sumof_a/amount_a) # Appends to new r.
     return r
 
 def smooth_a1(a,n): # Not sure why this work, with pytest but it does work, this was my original solution until i read that you should not use if 
@@ -46,6 +49,7 @@ def smooth_a1(a,n): # Not sure why this work, with pytest but it does work, this
 
 def smooth_b(b,n):
     r =[]
+
     # We split it into three intervals, the middle one stays the same
     for i in range(0, n): #Suppose to go from 0 to n,
         #We want to start at the first element
@@ -69,7 +73,7 @@ def smooth_b(b,n):
         sumof_b = sum(interval)
         length = len(interval)
         r.append(sumof_b/length)
-    return r
+    return r[:len(b)]
 
 def round_list(a_list, ndigits):
     rounded_list = [round(x, ndigits) for x in a_list]
