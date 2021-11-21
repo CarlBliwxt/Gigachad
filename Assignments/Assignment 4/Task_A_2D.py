@@ -1,5 +1,6 @@
 #Module implementing functions to work with SIR model.
 import matplotlib as m
+import numpy as np
 from matplotlib.lines import Line2D
 
 
@@ -18,6 +19,29 @@ def SIRcmap():
 
 
 def SIR(S0, I0, R0, a, b, T=100):
+    t = np.zeros(T)
+    for x in range(T+1):
+        t[x] = x
+    S = np.zeros(T)
+    I = np.zeros(T)
+    R = np.zeros(T)
+    S_temp = S0
+    I_temp = I0
+    R_temp = R0
+    for n in range(0, T):
+        S = np.append(S_temp, S0 - a * (S0 * I0) )
+        I = np.append(I_temp, I0 + a * (S0 * I0) - b * I0) 
+        R = np.append(R_temp, R0 + b * I0)
+        S_temp = S
+        I_temp = I
+        R_temp = R
+        S0 = S[-1]
+        I0 = I[-1]
+        R0 = R[-1]
+    return S, I, R, t   
+    
+    
+    
     """Runs SIR model for T steps.
 
     Parameters
@@ -54,8 +78,11 @@ def SIR(S0, I0, R0, a, b, T=100):
     return S, I, R, t
 
 def createSIR2D(rows, columns):
+    
+    for x in range(rows):
+        elements =[]
+    for
     """ Creates 2D grid to run the 2D SIR model on.
-
     Parameters
     ----------
     rows : integer

@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt 
-from scipy.integrate import odeint
 # Variables 
 S0 = 995 
 I0 = 5
@@ -14,8 +13,6 @@ for x in range(0, t.shape[0]):
     t[x] = x
 
 
-#print(t)
-
 
 
 def SIR(S0, I0, R0, a, b, T=100):
@@ -23,9 +20,9 @@ def SIR(S0, I0, R0, a, b, T=100):
     for x in range(T+1):
         t[x] = x
 
-    S = np.ndarray(T)
-    I = np.ndarray(T)
-    R = np.ndarray(T)
+    S = np.zeros(T)
+    I = np.zeros(T)
+    R = np.zeros(T)
     S_temp = S0
     I_temp = I0
     R_temp = R0
@@ -60,7 +57,6 @@ def plotting(t, S, I, R, d):
 S, I, R, t = SIR(S0,I0,R0, a, b, T=50)
 d = np.diff(R) * 0.9
 d = np.append(d, [0] )
-print(d*0.9)
 plotting(t, S, I, R, d)
 
     
