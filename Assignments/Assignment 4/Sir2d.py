@@ -15,8 +15,7 @@ NON_HUMAN=3
 #Returns a colormap that can be used to plot the results.
 def SIRcmap():
     colors_list=['#f2f2f2', '#e41a1c', '#377eb8', '#104c6d']
-    mp_SIR=m.colors.LinearSegmentedColormap.from_list('SIR_cmap', colors_list)
-
+    mp_SIR= m.colors.LinearSegmentedColormap.from_list('SIR_cmap', colors_list)
     return mp_SIR
 
 def createSIR2D(rows, columns):
@@ -69,8 +68,9 @@ def plot2D_SIR(grid, title='SIR model'):
                     ]
     fig, ax = plt.subplots()
     names = ["SUSCEPTIBLE" ,"INFECTED ", "RECOVERED", "NON_HUMAN" ]
-    im = ax.imshow(grid, SIRcmap())
+    im = ax.imshow(grid, SIRcmap()) 
     ax.legend(custom_lines, names)
+    ax.set_title(title)
     plt.show()
     #Implement this function yourself
     return
@@ -113,8 +113,8 @@ for n in range(T):
     print(grid)
     grids.append(grid)
 
- #Plot the results
-#[plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
+
+[plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
 
 
 
