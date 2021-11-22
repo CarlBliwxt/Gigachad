@@ -12,9 +12,6 @@ t = np.ndarray(T)
 for x in range(0, t.shape[0]):
     t[x] = x
 
-
-
-
 def SIR(S0, I0, R0, a, b, T=100):
     t = np.ndarray(T+1)
     for x in range(T+1):
@@ -54,9 +51,7 @@ def plotting(t, S, I, R, d):
     legend2.get_frame().set_alpha(1)
     plt.show();
 
-S, I, R, t = SIR(S0,I0,R0, a, b, T=50)
+S, I, R, t = SIR(S0, I0 , R0, a, b, T=50)
 d = np.diff(R) * 0.9
 d = np.append(d, [0] )
 plotting(t, S, I, R, d)
-
-    

@@ -1,8 +1,9 @@
+from numpy import random
 import matplotlib as m
 from matplotlib import colors
-import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import numpy as np
+import matplotlib.pyplot as plt 
 
 #Constants defining state of the individuals in the model
 SUSCEPTIBLE=0
@@ -99,24 +100,69 @@ def time_step(current_grid, alpha, beta):
 
     return new_grid
 
-# Settings
+
+def plotting(t, S, I, R, d):
+    fig, ax = plt.subplots(2)
+    ax[0].plot(t, S, 'blue', alpha=0.7, linewidth=2, label='Susceptible')
+    ax[0].plot(t, I, 'orange',  alpha=0.7, linewidth=2, label='Infected')
+    ax[0].plot(t, R, 'green', alpha=0.7, linewidth=2, label='Recovered')
+
+    ax[0].set_ylabel('Number of individuals')
+    ax[1].set_xlabel('Time (weeks)')
+    ax[1]. plot(t, d, "red", alpha=0.7, linewidth=2, label='death toll')
+    
+    legend1 = ax[0].legend()
+    legend1.get_frame().set_alpha(1)
+    legend2 = ax[1].legend()
+    legend2.get_frame().set_alpha(1)
+    plt.show();
+
+#Settings for 2D
 T = 50
-M = 8
-N = 6
-alpha = 0.6
-beta = 0.05
+alpha = 0.9
+beta = 0.15
+amount_INFECTED = 100
+grid = np.loadtxt('worldmap.dat', dtype=int, delimiter=',')
+amount = 0
+while amount < amount_INFECTED:
+    x = random.randint(len(grid))
+    y = random.randint(len(grid[0]))
+    if grid[x,y] == SUSCEPTIBLE:
+        grid[x, y ] = INFECTED
+        amount += 1
 
-# Initialize the grid
-grid = createSIR2D(rows=M, columns=N)
-grid[1, 0] = INFECTED
 
-grids = []
+grids =[]
 grids.append(grid)
 
+# Variables 
+
+S = np.ndarray(T) # allocated
+I = np.ndarray(T)
+R = np.ndarray(T)
+S0 = np.sum( grid == SUSCEPTIBLE)
+I0 = np.sum( grid == INFECTED)
+R0 = np.sum( grid == RECOVERED)
+t = np.ndarray(T+1)
+for x in range(T+1):
+    t[x] = x
 # Run the simulation
-for n in range(T):
+for n in range(0, T):
     grid = time_step(grid, alpha, beta)
+    S = np.append(S0, np.sum( grid == SUSCEPTIBLE))
+    S0 = S
+    I = np.append(I0, np.sum( grid == INFECTED))
+    I0 = I
+    R = np.append(R0, np.sum( grid == RECOVERED))
+    R0 = R
     grids.append(grid)
 
 
+
 [plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
+d = np.diff(R) * 0.9
+d = np.append(d, [0] )
+plotting(t, S, I, R, d)
+
+
+    
