@@ -23,7 +23,11 @@ def createSIR2D(rows, columns):
 
 def findNeighbors(grid, i, j):
     neighs = []
-    if (i + j >= 1  and i >= 0 and i <= len(grid) and j >= 0 and j <= len(grid[0])): # Restricting so it founds in pounds
+     # The first if, states which boundary conditions for i and j that needs to be fufilled
+    # To be inside the the grid, 
+    # The next four if exists to find the actual neighbors
+    # It checks if it is outside the grid or not and if the point is equal to zero  
+    if (i + j >= 1  and i >= 0 and i <= len(grid) and j >= 0 and j <= len(grid[0])): 
         if (i + 1 < len(grid) and grid[i+1, j] == SUSCEPTIBLE):
             neighs.append((i+1, j ))
         if ( i-1 >= 0 and grid[i-1, j] == SUSCEPTIBLE):
@@ -73,18 +77,18 @@ def plot2D_SIR(grid, title='SIR model'):
     return
 
 def time_step(current_grid, alpha, beta): 
-    temp =[]
+    infected_position =[]
     new_grid = current_grid.copy() # Copying the input to new_grid
    # Nestled for loop, to go over rows and columns in the input grid
     for i in range(len(current_grid)):
         for j in range(len(current_grid[0])):
             if current_grid[i][j] == INFECTED : # Check if they are infecteded
-                temp.append((i, j)) # append the coordinates to a temp 
+                infected_position.append((i, j)) # append the coordinates to a temp 
     
     # To handle the infected function
-    for x in range(len(temp)): # for loop to find neigbors
-        pos_i = temp[x][0] # Take out pos i, in the vector
-        pos_j = temp[x][1] # Only two dimensional so only need [0] and [1]
+    for x in range(len(infected_position)): # for loop to find neigbors
+        pos_i = infected_position[x][0] # Take out pos i, in the vector
+        pos_j = infected_position[x][1] # Only two dimensional so only need [0] and [1]
         a = findNeighbors(current_grid, pos_i, pos_j) # 
         for y in range(len(a)): # Take out coordinates of findNeighbors function
             i = a[y][0]
@@ -103,65 +107,81 @@ def time_step(current_grid, alpha, beta):
 
 def plotting(t, S, I, R, d):
     fig, ax = plt.subplots(2)
-    ax[0].plot(t, S, 'blue', alpha=0.7, linewidth=2, label='Susceptible')
-    ax[0].plot(t, I, 'orange',  alpha=0.7, linewidth=2, label='Infected')
-    ax[0].plot(t, R, 'green', alpha=0.7, linewidth=2, label='Recovered')
-
+    # Plots 
+    ax[0].plot(t, S, 'blue', linewidth = 2, label='Susceptible')
+    ax[0].plot(t, I, 'orange', linewidth = 2, label='Infected')
+    ax[0].plot(t, R, 'green',  linewidth = 2, label='Recovered')
+    ax[1]. plot(t, d, "red", linewidth = 2, label='Death toll')
+    # Labels for plots
     ax[0].set_ylabel('Number of individuals')
+    ax[1].set_ylabel('Number of individuals')
     ax[1].set_xlabel('Time (weeks)')
-    ax[1]. plot(t, d, "red", alpha=0.7, linewidth=2, label='death toll')
-    
+
+    # Setting legends for both grafs
     legend1 = ax[0].legend()
     legend1.get_frame().set_alpha(1)
     legend2 = ax[1].legend()
     legend2.get_frame().set_alpha(1)
+
     plt.show();
 
-#Settings for 2D
+
+#Settings and variables 
 T = 50
 alpha = 0.9
 beta = 0.15
 amount_INFECTED = 100
+# Loading in the grid 
 grid = np.loadtxt('worldmap.dat', dtype=int, delimiter=',')
-amount = 0
-while amount < amount_INFECTED:
-    x = random.randint(len(grid))
-    y = random.randint(len(grid[0]))
-    if grid[x,y] == SUSCEPTIBLE:
+amount = 0 # Set it to zero for the while loop
+
+# We do a while loop to get 100 infected
+while amount <= amount_INFECTED:
+    x = random.randint(len(grid)) # Generate a number between 0 and max value of rows
+    y = random.randint(len(grid[0])) # Generate a number between 0 and max value of columns 
+    if grid[x,y] == SUSCEPTIBLE: # Checks if the given coordinate is a zero 
         grid[x, y ] = INFECTED
         amount += 1
 
-
+# Storing grids 
 grids =[]
 grids.append(grid)
 
 # Variables 
-
-S = np.ndarray(T) # allocated
-I = np.ndarray(T)
-R = np.ndarray(T)
-S0 = np.sum( grid == SUSCEPTIBLE)
-I0 = np.sum( grid == INFECTED)
-R0 = np.sum( grid == RECOVERED)
+#Allocation for the arrays
 t = np.ndarray(T+1)
 for x in range(T+1):
     t[x] = x
-# Run the simulation
+S = np.ndarray(T) 
+I = np.ndarray(T)
+R = np.ndarray(T)
+# Setting inital values when starting
+S0 = np.sum( grid == SUSCEPTIBLE)
+I0 = np.sum( grid == INFECTED)
+R0 = np.sum( grid == RECOVERED)
+
+# Running the simulation 
 for n in range(0, T):
+    # For the 2D-simulation 
     grid = time_step(grid, alpha, beta)
-    S = np.append(S0, np.sum( grid == SUSCEPTIBLE))
-    S0 = S
-    I = np.append(I0, np.sum( grid == INFECTED))
-    I0 = I
-    R = np.append(R0, np.sum( grid == RECOVERED))
-    R0 = R
     grids.append(grid)
+    # For the 1D-simulation 
+    # Summing all variables and adding it to the arrays 
+    S = np.append(S0, np.sum( grid == SUSCEPTIBLE))
+    I = np.append(I0, np.sum( grid == INFECTED))
+    R = np.append(R0, np.sum( grid == RECOVERED))
+    # Updating variables
+    S0 = S
+    I0 = I
+    R0 = R
 
-
-
-[plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
+# Calculation of deathtolls
 d = np.diff(R) * 0.9
-d = np.append(d, [0] )
+d = np.append(d, [0] )   
+
+# Plot for 2D
+[plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
+#plot for 1D 
 plotting(t, S, I, R, d)
 
 

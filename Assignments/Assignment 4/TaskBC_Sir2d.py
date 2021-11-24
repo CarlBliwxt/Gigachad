@@ -22,13 +22,21 @@ def createSIR2D(rows, columns):
 
 def findNeighbors(grid, i, j):
     neighs = []
-    if (i + j >= 1  and i >= 0 and i <= len(grid) and j >= 0 and j <= len(grid[0])): # Restricting so it founds in pounds
+    # The first if, states which boundary conditions for i and j that needs to be fufilled
+    # To be inside the the grid, 
+    # The next four if exists to find the actual neighbors
+    # It checks if it is outside the grid or not and if the point is equal to zero  
+    if (i + j >= 1  and i >= 0 and i <= len(grid) and j >= 0 and j <= len(grid[0])): 
+
         if (i + 1 < len(grid) and grid[i+1, j] == SUSCEPTIBLE):
             neighs.append((i+1, j ))
+
         if ( i-1 >= 0 and grid[i-1, j] == SUSCEPTIBLE):
             neighs.append((i-1, j)) 
+
         if (j-1 >= 0 and grid[i, j-1] == SUSCEPTIBLE):
             neighs.append((i, j-1))
+
         if (j+1 < len(grid[0]) and grid[i, j+1] == SUSCEPTIBLE):
             neighs.append((i, j+1))
 
@@ -65,6 +73,7 @@ def plot2D_SIR(grid, title='SIR model'):
                     ]
     fig, ax = plt.subplots()
     names = ["SUSCEPTIBLE" ,"INFECTED ", "RECOVERED", "NON_HUMAN" ] # Names for legend
+    
     fig = ax.imshow(grid, SIRcmap()) 
     ax.legend(custom_lines, names)
     ax.set_title(title)
@@ -72,18 +81,18 @@ def plot2D_SIR(grid, title='SIR model'):
     return
 
 def time_step(current_grid, alpha, beta): 
-    temp =[]
+    infected_position =[]
     new_grid = current_grid.copy() # Copying the input to new_grid
    # Nestled for loop, to go over rows and columns in the input grid
     for i in range(len(current_grid)):
         for j in range(len(current_grid[0])):
             if current_grid[i][j] == INFECTED : # Check if they are infecteded
-                temp.append((i, j)) # append the coordinates to a temp 
+                infected_position.append((i, j)) # append the coordinates to a temp 
     
     # To handle the infected function
-    for x in range(len(temp)): # for loop to find neigbors
-        pos_i = temp[x][0] # Take out pos i, in the vector
-        pos_j = temp[x][1] # Only two dimensional so only need [0] and [1]
+    for x in range(len(infected_position)): # for loop to find neigbors
+        pos_i = infected_position[x][0] # Take out pos i, in the vector
+        pos_j = infected_position[x][1] # Only two dimensional so only need [0] and [1]
         a = findNeighbors(current_grid, pos_i, pos_j) # 
         for y in range(len(a)): # Take out coordinates of findNeighbors function
             i = a[y][0]
@@ -106,10 +115,9 @@ N = 6
 alpha = 0.6
 beta = 0.05
 
-# Initialize the grid
+# Initialize the grid and variable grids
 grid = createSIR2D(rows=M, columns=N)
 grid[1, 0] = INFECTED
-
 grids = []
 grids.append(grid)
 
@@ -117,6 +125,5 @@ grids.append(grid)
 for n in range(T):
     grid = time_step(grid, alpha, beta)
     grids.append(grid)
-
 
 [plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
