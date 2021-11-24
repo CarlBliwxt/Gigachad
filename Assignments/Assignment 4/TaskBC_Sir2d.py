@@ -44,7 +44,7 @@ def findNeighbors(grid, i, j):
 
 def infect(grid, i, j, alpha):
     probablity = np.random.rand() # random between 0 and 1
-    if (grid[i, j] == INFECTED):  # Check if it is already infected,
+    if (grid[i, j] == INFECTED):  # Check if it is al   ready infected,
         infected = True
     elif (grid[i, j] == SUSCEPTIBLE):  # check if person is Suspceptible
         if (probablity < alpha): # If alpha is bigger than prob, infect
@@ -74,7 +74,7 @@ def plot2D_SIR(grid, title='SIR model'):
     fig, ax = plt.subplots()
     names = ["SUSCEPTIBLE" ,"INFECTED ", "RECOVERED", "NON_HUMAN" ] # Names for legend
     
-    fig = ax.imshow(grid, SIRcmap()) 
+    fig = ax.imshow(grid, cmap = SIRcmap(), vmax = NON_HUMAN, vmin = SUSCEPTIBLE)
     ax.legend(custom_lines, names)
     ax.set_title(title)
     plt.show()
@@ -124,6 +124,7 @@ grids.append(grid)
 # Run the simulation
 for n in range(T):
     grid = time_step(grid, alpha, beta)
+    print(grid)
     grids.append(grid)
 
 [plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]

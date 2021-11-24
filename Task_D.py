@@ -70,7 +70,7 @@ def plot2D_SIR(grid, title='SIR model'):
                     ]
     fig, ax = plt.subplots()
     names = ["SUSCEPTIBLE" ,"INFECTED ", "RECOVERED", "NON_HUMAN" ] # Names for legend
-    fig = ax.imshow(grid, SIRcmap()) 
+    fig = ax.imshow(grid, cmap=SIRcmap()) 
     ax.legend(custom_lines, names)
     ax.set_title(title)
     plt.show()
@@ -167,13 +167,10 @@ for n in range(0, T):
     grids.append(grid)
     # For the 1D-simulation 
     # Summing all variables and adding it to the arrays 
-    S = np.append(S0, np.sum( grid == SUSCEPTIBLE))
-    I = np.append(I0, np.sum( grid == INFECTED))
-    R = np.append(R0, np.sum( grid == RECOVERED))
-    # Updating variables
-    S0 = S
-    I0 = I
-    R0 = R
+    S[n]= np.sum( grid == SUSCEPTIBLE)
+    I[n] = np.sum( grid == INFECTED)
+    R[n]= np.sum( grid == RECOVERED)
+  
 
 # Calculation of deathtolls
 d = np.diff(R) * 0.9
