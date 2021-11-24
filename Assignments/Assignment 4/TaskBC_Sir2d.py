@@ -124,7 +124,6 @@ grids.append(grid)
 # Run the simulation
 for n in range(T):
     grid = time_step(grid, alpha, beta)
-    print(grid)
     grids.append(grid)
 
 [plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]

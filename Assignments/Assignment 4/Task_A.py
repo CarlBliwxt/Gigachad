@@ -12,22 +12,21 @@ T = 40
 
 def SIR(S0, I0, R0, a, b, T=100):
     # Allocationg of, t, on element bigger than T because indexing starts at 0 
-    t = np.ndarray(T)
-    for x in range(T):
-        t[x] = x
+    t = np.ndarray(T+1)
     # Allocating the variables
-    S = np.ndarray(T)
-    I = np.ndarray(T)
-    R = np.ndarray(T)
+    S = np.ndarray(T+1) 
+    I = np.ndarray(T+1)
+    R = np.ndarray(T+1)
     S[0] = S0
     I[0] = I0
     R[0] = R0
-
+    t[0] = 0
     # updating the variables 
-    for n in range(1, T-1): # Iterate over the entire time period 
+    for n in range(1, T+1): # Iterate over the entire time period 
         S[n] = S[n-1] - a * (S[n-1] * I[n-1])
         I[n] = I[n-1] + a * (S[n-1] * I[n-1]) - b * I[n-1]
         R[n] = R[n-1] + b * I[n-1]
+        t[n] = n
         # Takes the most recent value and sets this as the new S0. 
     return S, I, R, t   
     
@@ -54,4 +53,7 @@ def plotting(t, S, I, R, d):
 # Getting the variables for the plots 
 S, I, R, t = SIR(S0, I0 , R0, a, b, T=50)
 d = np.diff(R) * 0.9
+d = np.append(d, 0)
+print(d)
+
 plotting(t, S, I, R, d)

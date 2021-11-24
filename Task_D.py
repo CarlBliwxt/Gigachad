@@ -1,3 +1,4 @@
+from matplotlib.text import Text
 from numpy import random
 import matplotlib as m
 from matplotlib import colors
@@ -149,8 +150,8 @@ grids.append(grid)
 
 # Variables 
 #Allocation for the arrays
-t = np.ndarray(T+1)
-for x in range(T+1):
+t = np.ndarray(T)
+for x in range(T):
     t[x] = x
 S = np.ndarray(T) 
 I = np.ndarray(T)
@@ -159,23 +160,21 @@ R = np.ndarray(T)
 S0 = np.sum( grid == SUSCEPTIBLE)
 I0 = np.sum( grid == INFECTED)
 R0 = np.sum( grid == RECOVERED)
+# For the 1D-simulation 
+    # Summing all variables and adding it to the arrays 
 
 # Running the simulation 
 for n in range(0, T):
     # For the 2D-simulation 
     grid = time_step(grid, alpha, beta)
+    S[n]= np.sum(grid == SUSCEPTIBLE)
+    I[n] = np.sum(grid == INFECTED)
+    R[n]= np.sum(grid == RECOVERED)
     grids.append(grid)
-    # For the 1D-simulation 
-    # Summing all variables and adding it to the arrays 
-    S[n]= np.sum( grid == SUSCEPTIBLE)
-    I[n] = np.sum( grid == INFECTED)
-    R[n]= np.sum( grid == RECOVERED)
-  
 
 # Calculation of deathtolls
 d = np.diff(R) * 0.9
 d = np.append(d, [0] )   
-
 # Plot for 2D
 [plot2D_SIR(grids[t], title=f'week {t}') for t in np.arange(0,T+1,T//5)]
 #plot for 1D 
