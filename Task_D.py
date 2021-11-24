@@ -44,23 +44,18 @@ def infect(grid, i, j, alpha):
     probablity = np.random.rand() # random between 0 and 1
     if (grid[i, j] == INFECTED):  # Check if it is already infected,
         infected = True
-    elif (grid[i, j] == SUSCEPTIBLE):  # check if person is Suspceptible
-        if (probablity < alpha): # If alpha is bigger than prob, infect
-            infected = True
-        else: 
-            infected = False
+    elif (grid[i, j] == SUSCEPTIBLE and probablity < alpha):  # check if person is Suspceptible
+        infected = True
     else: 
         infected = False
     return infected
 
 def recover(grid, i, j, beta):
     probability = np.random.rand() # random generator between 0 and 1
-    
-    if (grid[i, j] == INFECTED):  # Checks if the person is infeced
-        if (probability < beta):
-            recovered = True
-        else: 
-            recovered = False
+    if (grid[i, j] == INFECTED and probability < beta):  # Checks if the person is infeced
+        recovered = True
+    else: 
+        recovered = False
     return recovered
 
 def plot2D_SIR(grid, title='SIR model'):
