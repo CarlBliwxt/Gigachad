@@ -92,7 +92,7 @@ def time_step(current_grid, alpha, beta):
             if (infect(current_grid, i, j, alpha) == True) : # If infect returns true, add infected at coordinate
                 new_grid[i, j ] = INFECTED
     # To handle the recover function, 
-    #Nestled for loop, to loop over every element in c
+    #Nestled for loop, to loop over every element in the grid
     for a in range(len(new_grid)): #
         for b in range(len(new_grid[0])):
             if (new_grid[a, b] == INFECTED and recover(new_grid, a, b, beta) == True):
@@ -123,9 +123,9 @@ def plotting(t, S, I, R, d):
 
 
 #Settings and variables 
-T = 50
-alpha = 0.9
-beta = 0.15
+T = 200
+alpha = 0.19
+beta = 0.05
 amount_INFECTED = 100
 # Loading in the grid 
 grid = np.loadtxt('worldmap.dat', dtype=int, delimiter=',')
@@ -145,16 +145,8 @@ grids.append(grid)
 
 # Variables 
 #Allocation for the arrays
-t = np.ndarray(T)
-for x in range(T):
-    t[x] = x
-S = np.ndarray(T) 
-I = np.ndarray(T)
-R = np.ndarray(T)
+t, S, I, R = np.zeros(T), np.zeros(T), np.zeros(T), np.zeros(T)
 # Setting inital values when starting
-S0 = np.sum( grid == SUSCEPTIBLE)
-I0 = np.sum( grid == INFECTED)
-R0 = np.sum( grid == RECOVERED)
 # For the 1D-simulation 
     # Summing all variables and adding it to the arrays 
 
@@ -166,6 +158,7 @@ for n in range(0, T):
     I[n] = np.sum(grid == INFECTED)
     R[n]= np.sum(grid == RECOVERED)
     grids.append(grid)
+    t[n] = n
 
 # Calculation of deathtolls
 d = np.diff(R) * 0.9

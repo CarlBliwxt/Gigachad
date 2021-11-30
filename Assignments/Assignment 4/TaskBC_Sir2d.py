@@ -31,14 +31,14 @@ def findNeighbors(grid, i, j):
         if (i + 1 < len(grid) and grid[i+1, j] == SUSCEPTIBLE):
             neighs.append((i+1, j ))
 
-        if ( i-1 >= 0 and grid[i-1, j] == SUSCEPTIBLE):
-            neighs.append((i-1, j)) 
+        if (i - 1 >= 0 and grid[i - 1, j] == SUSCEPTIBLE):
+            neighs.append((i - 1, j)) 
 
-        if (j-1 >= 0 and grid[i, j-1] == SUSCEPTIBLE):
-            neighs.append((i, j-1))
+        if (j-1 >= 0 and grid[i, j - 1] == SUSCEPTIBLE):
+            neighs.append((i, j - 1))
 
-        if (j+1 < len(grid[0]) and grid[i, j+1] == SUSCEPTIBLE):
-            neighs.append((i, j+1))
+        if (j + 1 < len(grid[0]) and grid[i, j+1] == SUSCEPTIBLE):
+            neighs.append((i, j + 1))
 
     return neighs
 
