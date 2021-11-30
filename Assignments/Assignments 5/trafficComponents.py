@@ -10,9 +10,11 @@ class Vehicle:
         self.borntime = borntime
     def __str__(self):
         return f'{self.destination}'
+
+    __repr__ = __str__
     def born_time(self):
         return self.borntime
-    __repr__ = __str__
+    
     
 class Lane:
     "Represents a lane with (possible) vehicles"
@@ -23,8 +25,11 @@ class Lane:
         return f'{self.lane}' 
 
     def enter(self, vehicle):
-    
-        self.lane[-1] = vehicle
+        if self.is_last_free(): 
+            self.lane[-1] = vehicle
+            return self.lane
+        else:
+            return None
 
     def is_last_free(self):
         if self.lane[-1] == None :
@@ -37,18 +42,13 @@ class Lane:
             if self.lane[n] == None:
                 self.lane[n] = self.lane[n+1]
                 self.lane[n+1] = None
-
-    def get_first_string(self):
-        if self.lane[0] == None:
-            return None
-        else: 
-            return str(self.lane[0])
-
+    
     def get_first(self):
         if self.lane[0] == None:
             return None
         else: 
             return self.lane[0]
+            
 
 
     def remove_first(self):

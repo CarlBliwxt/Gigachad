@@ -28,80 +28,79 @@ class TrafficSystem:
         self.south_time = []
 
     def snapshot(self):
-        print(f'{self.light_west}, {self.lane_west}, {self.lane}, {self.que},') 
+        print(f'{self.light_west}, {self.lane_west}, {self.lane}, {self.que}, {self.blocked}, {self.vehicle_counter}')
         print(f'{self.light_south}, {self.lane_south}')
         
 
     def step(self):
-        
+        """Take one time step for all components."""
         self.time += 1
-
-        if tc.Light.is_green(self.light_west):
-            if self.lane_west.get_first() != None: 
-                self.exit_west += 1
-                current = self.lane_west.get_first()
-                exit_time = current.born_time()
-                time = abs(self.time - exit_time)
-                self.west_time.append(time)
-            self.lane_west.remove_first()
-                
+        creator = self.destination.step()
         
-               
-        if self.light_south.is_green():
+        self.light_west.step()
+        self.light_south.step()
+        
+        if creator != None:
+            vehicle = tc.Vehicle(creator, self.time)
+            self.vehicle_counter += 1
+        
+                   
+        if self.light_west.is_green() == True:
+            if self.lane_west.get_first() != None:
+                self.exit_west += 1  
+                current = self.lane_west.get_first()
+                timestamp = current.born_time()
+                self.west_time.append(self.time-timestamp)
+            self.lane_west.remove_first()
+            
+        
+            
+        if self.light_south.is_green() == True:
             if self.lane_south.get_first() != None:
                 self.exit_south += 1  
                 current = self.lane_south.get_first()
-                exit_time = current.born_time()
-                time = abs(self.time - exit_time)
-                self.south_time.append(time)
+                timestamp = current.born_time()
+                self.south_time.append(self.time-timestamp)
             self.lane_south.remove_first()
-                
-        tc.Lane.step(self.lane_west)
-        tc.Lane.step(self.lane_south)
+            
+            
+        self.lane_west.step()
+        self.lane_south.step()
         
-        char = str(tc.Lane.get_first(self.lane))
-        print(char)
-
-        if char == "W" : 
-            if tc.Lane.is_last_free(self.lane_west) == True:
-                bil = tc.Lane.remove_first(self.lane)
+        temp = str(self.lane.get_first())
+        
+        if temp == 'W':
+            if self.lane_west.is_last_free() == True:
+                bil = self.lane.remove_first()
                 self.lane_west.enter(bil)
-            else: 
-                self.blocked += 1
-        if char == "S" : 
-            if tc.Lane.is_last_free(self.lane_south) == True:
-                bil = tc.Lane.remove_first(self.lane)
-                self.lane_south.enter(bil)
-            else: 
-                self.blocked += 1
-                print( self.blocked)
-
-    
-        tc.Lane.step(self.lane)
-
-        temp_des = self.destination.step()
-        if temp_des != None:
-            vehicle = tc.Vehicle(temp_des, self.time)
-            self.vehicle_counter += 1
-        if tc.Lane.is_last_free(self.lane): 
-            if len(self.que) > 0:
-                self.que_count += 1
-                self.lane.enter(self.que.pop(0))
-                if  temp_des != None:
-                    self.que.append(vehicle)
-                    self.que_count += 1
             else:
-                if temp_des != None:
+                self.blocked += 1
+        
+        elif temp == 'S':
+            if self.lane_south.is_last_free() == True:
+                bil = self.lane.remove_first()
+                self.lane_south.enter(bil)
+            else:
+                self.blocked += 1
+        
+        self.lane.step()
+       
+        
+        if self.lane.is_last_free() == True:
+            if self.que == []:
+                if creator != None:
                     self.lane.enter(vehicle)
-        else: 
-            if temp_des != None:
+            else:                   
+                self.lane.enter(self.que.pop(0))
+                if creator != None:
+                    self.que.append(vehicle)
+                                     
+        else:
+            if creator != None:
                 self.que.append(vehicle)
-                self.que_count += 1
         
-
-        
-        tc.Light.step(self.light_south)
-        tc.Light.step(self.light_west)
+        if self.que != []:
+            self.que_count += 1
 
 
     def in_system(self):
@@ -110,6 +109,7 @@ class TrafficSystem:
        lane_south = self.lane_south.number_in_lane()
        que = len(self.que) 
        sumof = in_lane + lane_west + lane_south + que 
+
        return sumof 
     
 
@@ -118,7 +118,6 @@ class TrafficSystem:
         self.south_time = sorted(self.south_time)
         west_time_average = round(sum(self.west_time)/len(self.west_time),2)
         south_time_average = round(sum(self.south_time)/len(self.south_time),2)
-        print(' this is blocked', self.blocked)
         print(f'Statistics after {self.time} timesteps:      \n')
         print(f'Created vehicles:{self.vehicle_counter}')
         print(f'Cars in system:  {self.in_system()}\n')
