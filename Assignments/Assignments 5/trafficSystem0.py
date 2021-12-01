@@ -24,7 +24,7 @@ class TrafficSystem:
 
     def step(self):
         self.time += 1
-        tc.Lane.remove_first(self.lane1)
+        tc.Lane.remove_first(self.lane1) # removes the first vehicle from lane1
         tc.Lane.step(self.lane1) # stepping first lane
         if tc.Light.is_green(self.lights) == True:
             if tc.Lane.is_last_free(self.lane1) == True: 

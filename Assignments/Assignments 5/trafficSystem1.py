@@ -3,6 +3,7 @@ from statistics import mean, median
 from time import sleep
 import trafficComponents as tc
 import destinations as d 
+import numpy as np 
 
 
 class TrafficSystem:
@@ -35,54 +36,58 @@ class TrafficSystem:
     def step(self):
         
         self.time += 1
-
+        # Vehicle or None gets removed 
         if tc.Light.is_green(self.light_west):
-            if self.lane_west.get_first() != None: 
+
+            if tc.Lane.get_first(self.lane_west) != None:  # Check if Vehicle 
                 self.exit_west += 1
                 current = self.lane_west.get_first()
-                exit_time = current.born_time()
+                exit_time = tc.Vehicle.born_time(current)
                 time = abs(self.time - exit_time)
                 self.west_time.append(time)
-            self.lane_west.remove_first()
+            tc.Lane.remove_first(self.lane_west)
                 
         
                
-        if self.light_south.is_green():
-            if self.lane_south.get_first() != None:
+        if tc.Light.is_green(self.light_south): 
+            if tc.Lane.get_first( self.lane_south) != None:
                 self.exit_south += 1  
-                current = self.lane_south.get_first()
-                exit_time = current.born_time()
+                current = tc.Lane.get_first(self.lane_south)
+                exit_time = tc.Vehicle.born_time(current)
                 time = abs(self.time - exit_time)
                 self.south_time.append(time)
-            self.lane_south.remove_first()
-                
+            tc.Lane.remove_first(self.lane_south)
+
+
+        #Step of files    
         tc.Lane.step(self.lane_west)
         tc.Lane.step(self.lane_south)
-        
-        char = str(tc.Lane.get_first(self.lane))
-        print(char)
-
-        if char == "W" : 
-            if tc.Lane.is_last_free(self.lane_west) == True:
+        # Transform to get a string
+        direction = str(tc.Lane.get_first(self.lane))
+        # Two directions, two if-statements 
+        if direction == "W" : 
+            if tc.Lane.is_last_free(self.lane_west):
                 bil = tc.Lane.remove_first(self.lane)
                 self.lane_west.enter(bil)
             else: 
                 self.blocked += 1
-        if char == "S" : 
-            if tc.Lane.is_last_free(self.lane_south) == True:
+        if direction == "S" : 
+            if tc.Lane.is_last_free(self.lane_south):
                 bil = tc.Lane.remove_first(self.lane)
                 self.lane_south.enter(bil)
             else: 
                 self.blocked += 1
-                print( self.blocked)
 
-    
+
+        # Stepping of the lane
         tc.Lane.step(self.lane)
-
+        # Stepping the destination to get a "new" destination
         temp_des = self.destination.step()
-        if temp_des != None:
+        if temp_des != None: # check for None
             vehicle = tc.Vehicle(temp_des, self.time)
             self.vehicle_counter += 1
+
+        # Handling the que
         if tc.Lane.is_last_free(self.lane): 
             if len(self.que) > 0:
                 self.que_count += 1
@@ -99,37 +104,55 @@ class TrafficSystem:
                 self.que_count += 1
         
 
-        
+        # Stepping both lights 
         tc.Light.step(self.light_south)
         tc.Light.step(self.light_west)
 
 
     def in_system(self):
-       in_lane = self.lane.number_in_lane()
-       lane_west = self.lane_west.number_in_lane()
-       lane_south = self.lane_south.number_in_lane()
-       que = len(self.que) 
-       sumof = in_lane + lane_west + lane_south + que 
-       return sumof 
+        # Everything that is in the system at the time
+        in_lane = self.lane.number_in_lane()
+        lane_west = self.lane_west.number_in_lane()
+        lane_south = self.lane_south.number_in_lane()
+        que = len(self.que) 
+        sumof = in_lane + lane_west + lane_south + que 
+        return sumof 
     
 
     def print_statistics(self):
-        self.west_time = sorted(self.west_time)
-        self.south_time = sorted(self.south_time)
-        west_time_average = round(sum(self.west_time)/len(self.west_time),2)
-        south_time_average = round(sum(self.south_time)/len(self.south_time),2)
-        print(' this is blocked', self.blocked)
-        print(f'Statistics after {self.time} timesteps:      \n')
+        x = ' '
+        # Everything needed for west 
+        west_minimal_time = np.amin(self.west_time)
+        west_maximal_time = np.amax(self.west_time)
+        west_median = format( median(sorted(self.west_time)),".1f")
+        west_time_average = round(mean(self.west_time),1)
+        #Everything needed for south
+        south_minimal_time = np.amin(self.south_time)
+        south_maximal_time = np.amax(self.south_time)
+        south_median = format(median(sorted(self.south_time)),".1f") 
+        south_time_average = round(mean(self.south_time),1)
+
+        #Blocked and queue: 
+        blocked = round(self.blocked/self.time, 3 ) * 100
+        queue = float(self.que_count/self.time) * 100
+        queue = round(queue, 2)
+
+    
+        
+        # Printout 
+        print(f'Statistics after {self.time} timesteps:')
+
         print(f'Created vehicles:{self.vehicle_counter}')
-        print(f'Cars in system:  {self.in_system()}\n')
-        print(f'At exit          West:          South:')
-        print(f'Vehicles out:    {self.exit_west}             {self.exit_south}')
-        print(f'Minimal time:    {self.west_time[0]}             {self.south_time[0]}')
-        print(f'Maximal time:    {self.west_time[-1]}             {self.south_time[-1]}')
-        print(f'Mean time:       {west_time_average}          {south_time_average}')
-        print(f'Median time:     {self.west_time[len(self.west_time)//2]}             {self.south_time[len(self.south_time)//2]} \n')
-        print(f'Blocked:         {(self.blocked/self.time)*100} %       ')
-        print(f'Queue            {(self.que_count/self.time)*100} %             ')
+        print(f'Cars in system:  {self.in_system()}')
+
+        print(f'At exit: {x *6} West: {x * 6 } South:')
+        print(f'Vehicles out: { x * 2} {self.exit_west} {x *11} {self.exit_south}')
+        print(f'Minimal time: {x * 2} {west_minimal_time} {x * 11} {south_minimal_time}')
+        print(f'Maximal time: {x * 2} {west_maximal_time} {x * 11} {south_maximal_time}')
+        print(f'Mean time   : {x * 2} {west_time_average} {x * 8} {south_time_average}')
+        print(f'Median time : {x * 2} {west_median} {x*8} {south_median}')
+        print(f'Blocked : {x * 2}{blocked} %       ')
+        print(f'Queue   : {x* 2}{queue} % ')
         
 
 
