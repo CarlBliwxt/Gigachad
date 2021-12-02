@@ -25,8 +25,8 @@ class TrafficSystem:
         self.blocked = 0
         self.que_count = 0
         self.exitedCars = []
-        self.west_time = []
-        self.south_time = []
+        self.west_insystem_time = []
+        self.south_insystem_time = []
 
     def snapshot(self):
         print(f'{self.light_west}, {self.lane_west}, {self.lane}, {self.que},') 
@@ -41,10 +41,10 @@ class TrafficSystem:
 
             if tc.Lane.get_first(self.lane_west) != None:  # Check if Vehicle 
                 self.exit_west += 1
-                current_vehicle = tc.Lane.get_first(self.lane_west)
-                exit_time = tc.Vehicle.born_time(current_vehicle)
+                removed_vehicle = tc.Lane.get_first(self.lane_west)
+                exit_time = tc.Vehicle.born_time(removed_vehicle)
                 time = abs(self.time - exit_time)
-                self.west_time.append(time)
+                self.west_insystem_time.append(time)
             tc.Lane.remove_first(self.lane_west)
                 
         
@@ -52,10 +52,10 @@ class TrafficSystem:
         if tc.Light.is_green(self.light_south): 
             if tc.Lane.get_first( self.lane_south) != None:
                 self.exit_south += 1  
-                current = tc.Lane.get_first(self.lane_south)
-                exit_time = tc.Vehicle.born_time(current)
+                removed_vehicle = tc.Lane.get_first(self.lane_south)
+                exit_time = tc.Vehicle.born_time(removed_vehicle)
                 time = abs(self.time - exit_time)
-                self.south_time.append(time)
+                self.south_insystem_time.append(time)
             tc.Lane.remove_first(self.lane_south)
 
 
@@ -122,15 +122,15 @@ class TrafficSystem:
     def print_statistics(self):
         x = ' '
         # Everything needed for west 
-        west_minimal_time = np.amin(self.west_time)
-        west_maximal_time = np.amax(self.west_time)
-        west_median = format(median(sorted(self.west_time)),".1f")
-        west_time_average = round(mean(self.west_time),1)
+        west_minimal_time = np.amin(self.west_insystem_time)
+        west_maximal_time = np.amax(self.west_insystem_time)
+        west_median = format(median(sorted(self.west_insystem_time)),".1f")
+        west_time_average = round(mean(self.west_insystem_time),1)
         #Everything needed for south
-        south_minimal_time = np.amin(self.south_time)
-        south_maximal_time = np.amax(self.south_time)
-        south_median = format(median(sorted(self.south_time)),".1f") 
-        south_time_average = round(mean(self.south_time),1)
+        south_minimal_time = np.amin(self.south_insystem_time)
+        south_maximal_time = np.amax(self.south_insystem_time)
+        south_median = format(median(sorted(self.south_insystem_time)),".1f") 
+        south_time_average = round(mean(self.south_insystem_time),1)
 
         #Blocked and queue: 
         blocked = round(self.blocked/self.time, 3 ) * 100
