@@ -41,8 +41,8 @@ class TrafficSystem:
 
             if tc.Lane.get_first(self.lane_west) != None:  # Check if Vehicle 
                 self.exit_west += 1
-                current = self.lane_west.get_first()
-                exit_time = tc.Vehicle.born_time(current)
+                current_vehicle = tc.Lane.get_first(self.lane_west)
+                exit_time = tc.Vehicle.born_time(current_vehicle)
                 time = abs(self.time - exit_time)
                 self.west_time.append(time)
             tc.Lane.remove_first(self.lane_west)
@@ -124,7 +124,7 @@ class TrafficSystem:
         # Everything needed for west 
         west_minimal_time = np.amin(self.west_time)
         west_maximal_time = np.amax(self.west_time)
-        west_median = format( median(sorted(self.west_time)),".1f")
+        west_median = format(median(sorted(self.west_time)),".1f")
         west_time_average = round(mean(self.west_time),1)
         #Everything needed for south
         south_minimal_time = np.amin(self.south_time)
@@ -146,13 +146,13 @@ class TrafficSystem:
         print(f'Cars in system:  {self.in_system()}')
 
         print(f'At exit: {x *6} West: {x * 6 } South:')
-        print(f'Vehicles out: { x * 2} {self.exit_west} {x *11} {self.exit_south}')
+        print(f'Vehicles out: {x * 2} {self.exit_west} {x *11} {self.exit_south}')
         print(f'Minimal time: {x * 2} {west_minimal_time} {x * 11} {south_minimal_time}')
         print(f'Maximal time: {x * 2} {west_maximal_time} {x * 11} {south_maximal_time}')
         print(f'Mean time   : {x * 2} {west_time_average} {x * 8} {south_time_average}')
         print(f'Median time : {x * 2} {west_median} {x*8} {south_median}')
-        print(f'Blocked : {x * 2}{blocked} %       ')
-        print(f'Queue   : {x* 2}{queue} % ')
+        print(f'Blocked : {x * 2}{blocked} % ')
+        print(f'Queue   : {x * 2}{queue} % ')
         
 
 
