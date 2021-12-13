@@ -27,10 +27,17 @@ class TrafficSystem:
         self.exitedCars = []
         self.west_insystem_time = []
         self.south_insystem_time = []
+        self.check_blocked = False
 
     def snapshot(self):
-        print(f'{self.light_west}, {self.lane_west}, {self.lane}, {self.que},') 
-        print(f'{self.light_south}, {self.lane_south}')
+        if self.check_blocked: 
+            print(self.check_blocked)
+            print(f'{self.light_west},  {self.lane_west}, * {self.lane}, {self.que},') 
+            print(f'{self.light_south}, {self.lane_south}')
+        else: 
+            print(self.check_blocked)
+            print(f'{self.light_west}, {self.lane_west}, {self.lane}, {self.que},') 
+            print(f'{self.light_south}, {self.lane_south}')
         
 
     def step(self):
@@ -69,14 +76,19 @@ class TrafficSystem:
             if tc.Lane.is_last_free(self.lane_west):
                 bil = tc.Lane.remove_first(self.lane)
                 self.lane_west.enter(bil)
+                self.check_blocked = False
             else: 
                 self.blocked += 1
+                self.check_blocked = True
         if direction == "S" : 
             if tc.Lane.is_last_free(self.lane_south):
                 bil = tc.Lane.remove_first(self.lane)
                 self.lane_south.enter(bil)
+                self.check_blocked = False
             else: 
                 self.blocked += 1
+                self.check_blocked = True
+
 
 
         # Stepping of the lane
