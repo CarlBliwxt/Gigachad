@@ -104,9 +104,9 @@ class TrafficSystem:
             if len(self.que) > 0:
                 self.que_count += 1
                 self.lane.enter(self.que.pop(0))
-                if  temp_des != None:
+                if temp_des != None:
                     self.que.append(vehicle)
-                    self.que_count += 1
+                    self.que_count +=1 
             else:
                 if temp_des != None:
                     self.lane.enter(vehicle)
@@ -146,8 +146,8 @@ class TrafficSystem:
 
         #Blocked and queue: 
         blocked = round(self.blocked/self.time, 3 ) * 100
-        queue = float(self.que_count/self.time) * 100
-        queue = round(queue, 2)
+        queue = (self.que_count/self.time) * 100
+    
 
     
         
@@ -170,7 +170,7 @@ class TrafficSystem:
 
 def main():
     ts = TrafficSystem()
-    for i in range(100):
+    for i in range(200):
         ts.snapshot()
         ts.step()
         sleep(0)

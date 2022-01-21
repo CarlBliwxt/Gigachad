@@ -60,7 +60,7 @@ class TrafficSystem:
 
 def main():
     ts = TrafficSystem()
-    for i in range(20):
+    for i in range(150):
         ts.snapshot()
         ts.step()
         sleep(0.1)
